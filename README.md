@@ -1,5 +1,5 @@
-# Battery PAssport REST APIs to connect with backend 
-Wrapper for DIP, use case: Battery Passport
+# Battery Passport REST APIs to connect with backend 
+Wrapper for other service
 
 ## Installation
 
