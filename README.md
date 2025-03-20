@@ -1,4 +1,4 @@
-# zirkel-dip-wrapper
+# Battery PAssport REST APIs to connect with backend 
 Wrapper for DIP, use case: Battery Passport
 
 ## Installation
