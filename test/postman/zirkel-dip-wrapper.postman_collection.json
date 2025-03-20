@@ -1,0 +1,416 @@
+{
+	"info": {
+		"_postman_id": "4efd3006-49f7-4be0-bcfa-a0d39472c557",
+		"name": "zirkel-dip-wrapper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24107635"
+	},
+	"item": [
+		{
+			"name": "default",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/api/info/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"info",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"authToken is set\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.token).to.exists",
+							"    pm.collectionVariables.set(\"authToken\", jsonData.token);",
+							"    pm.environment.set(\"authToken\", jsonData.token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{apiUser}}\",\n    \"password\": \"{{apiPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{suiteServerApiPrefix}}/login",
+					"host": [
+						"{{suiteServerApiPrefix}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": "Authorization endpoint."
+			},
+			"response": []
+		},
+		{
+			"name": "create battery passport",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"batteryPassId\":\"batterypass20004\",\n\"generalInformation\":[\n      \"serialNumber: ABC12345\",\n      \"capacity: 3000mAh\",\n      \"manufacturer: Example Batteries Inc.\",\n      \"voltage: 3.7V\",\n      \"chemistry: Lithium-ion\"\n    ],\n\"labelsAndCertifications\": [\n      \"certificationNumber: CERT123\",\n      \"compliance: RoHS\"\n      ],\n\"supplyChainDueDiligence\":[\"supplierName: Supplier XYZ\",\"dueDiligenceReport: Due diligence report content\"],\n\"carbonFootprintInformation\": [\n      \"emissions: 100 kg CO2e\",\n      \"reductionPlan: Carbon reduction plan\" ],\n\"materialsAndCompositions\":[\n      \"mainMaterial: Lithium-ion\",\n      \"components: ['Cathode', 'Anode', 'Electrolyte']\"\n],\n\"circularityAndResourceEfficiency\":[\n      \"recyclingProgram: Recycling program details\",\n      \"circularityScore: A\" ],\n\"performanceAndDurability\": [\n      \"performanceMetrics: Performance metrics\",\n      \"durabilityTests: 'Durability test results\" ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3121/api/createbatterypass",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"createbatterypass"
+					],
+					"query": [
+						{
+							"key": "batteryid",
+							"value": "battery101",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get battery passport",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/api/getbatterypass/batterypass20004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"getbatterypass",
+						"batterypass20004"
+					]
+				},
+				"description": "#### Find by primaryKey\n\nYou can find the Item using this endpoint\n         \nIf you can not find it, it means you have never sent such an object yet, or it has been deleted using delete endpoint. check the event history to find out if the object existed before or not."
+			},
+			"response": []
+		},
+		{
+			"name": "update battery passport",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "updateBatteryPassportDto",
+							"value": "{\"batteryPassId\":\"batterypass20004\",\"generalInformation\":[\"serialNumber: ABC12345\",\"capacity: 3000mAh\",\"manufacturer: Example Batteries Inc.\",      \"voltage: 2.6V\",\"chemistry: Lithium-ion\"],\"labelsAndCertifications\": [      \"certificationNumber: CERT12345363\",\"compliance: RoHS\"],\"supplyChainDueDiligence\":[\"supplierName: Supplier XYZzzz\",\"dueDiligenceReport: Due diligence report content\"],\"carbonFootprintInformation\": [\"emissions: 90 kg CO2e\",      \"reductionPlan: Carbon reduction plan\" ],\"materialsAndCompositions\":[      \"mainMaterial: Lithium-ion\",\"components: ['Cathode', 'Anode', 'Electrolyte']\"],\"circularityAndResourceEfficiency\":[\"recyclingProgram: Recycling program details\", \"circularityScore: A++\" ],\"performanceAndDurability\": [\"performanceMetrics: Performance metrics\",      \"durabilityTests: 'Durability test results\" ]}",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/Users/manjiiri/Code/BatteryPass/CODE/DIP-BatteryPass/zirkel-dip-wrapper/test/postman/EU declaration of conformity-en.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3121/api/updatebatterypass/batterypass20004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"updatebatterypass",
+						"batterypass20004"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get history of battery passport",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/api/gethistoryofbatterypass/batterypass20004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"gethistoryofbatterypass",
+						"batterypass20004"
+					]
+				},
+				"description": "#### Find by primaryKey\n\nYou can find the Item using this endpoint\n         \nIf you can not find it, it means you have never sent such an object yet, or it has been deleted using delete endpoint. check the event history to find out if the object existed before or not."
+			},
+			"response": []
+		},
+		{
+			"name": "get create event of battery passport",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/api/getfirstcreateeventrecord/batterypass20004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"getfirstcreateeventrecord",
+						"batterypass20004"
+					]
+				},
+				"description": "#### Find by primaryKey\n\nYou can find the Item using this endpoint\n         \nIf you can not find it, it means you have never sent such an object yet, or it has been deleted using delete endpoint. check the event history to find out if the object existed before or not."
+			},
+			"response": []
+		},
+		{
+			"name": "get last update on battery passport",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/api/getlastupdateeventrecord/batterypass20004",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"getlastupdateeventrecord",
+						"batterypass20004"
+					]
+				},
+				"description": "#### Find by primaryKey\n\nYou can find the Item using this endpoint\n         \nIf you can not find it, it means you have never sent such an object yet, or it has been deleted using delete endpoint. check the event history to find out if the object existed before or not."
+			},
+			"response": []
+		},
+		{
+			"name": "get files of battery passport",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{AuthToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3121/api/getipfsdata/battery2424",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3121",
+					"path": [
+						"api",
+						"getipfsdata",
+						"battery2424"
+					]
+				},
+				"description": "#### Find by primaryKey\n\nYou can find the Item using this endpoint\n         \nIf you can not find it, it means you have never sent such an object yet, or it has been deleted using delete endpoint. check the event history to find out if the object existed before or not."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "authToken",
+			"value": ""
+		}
+	]
+}
